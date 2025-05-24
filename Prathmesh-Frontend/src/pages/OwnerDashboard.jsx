@@ -27,7 +27,7 @@ const OwnerDashboard = () => {
     const fetchCounts = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/owners/stats/${ownerId}`
+          `https://prathmesh-imp.onrender.com/api/owners/stats/${ownerId}`
         );
         setCounts(res.data);
       } catch (err) {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { HiPlus, HiPencil, HiTrash } from "react-icons/hi";
 
-const API_BASE = "http://localhost:5000/api/deals";
-const OWNERS_API = "http://localhost:5000/api/owners/getall";
+const API_BASE = "https://prathmesh-imp.onrender.com/api/deals";
+const OWNERS_API = "https://prathmesh-imp.onrender.com/api/owners/getall";
 
 const Deals = () => {
   const [deals, setDeals] = useState([]);
