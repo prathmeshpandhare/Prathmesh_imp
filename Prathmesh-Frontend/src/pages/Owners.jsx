@@ -8,7 +8,7 @@ const Owners = () => {
   const [allVans, setAllVans] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
-  const API_BASE = "https://prathmesh-imp.onrender.com";
+  const API_BASE = "https://prathmesh-1.onrender.com";
 
   const [form, setForm] = useState({
     name: "",

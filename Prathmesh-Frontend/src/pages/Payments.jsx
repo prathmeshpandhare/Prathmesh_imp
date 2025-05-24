@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HiPlus, HiPencil, HiTrash } from "react-icons/hi";
 import axios from "axios";
 
-const BASE_URL = "https://prathmesh-imp.onrender.com/api";
+const BASE_URL = "https://prathmesh-1.onrender.com/api";
 
 const Payments = () => {
   const [owners, setOwners] = useState([]);
