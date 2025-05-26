@@ -22,7 +22,9 @@ app.use(
 );
 
 app.use(express.json());
-
+app.get("/", (req, res) => {
+  res.send("Welcome to the Van Rental API");
+});
 // Your routes
 app.use("/api/owners", ownersRoutes);
 app.use("/api/deals", dealsRoutes);
