@@ -16,7 +16,7 @@ const Login = ({ setIsAuthenticated }) => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://prathmesh-1.onrender.com/api/auth/login",
+        "https://prathmesh-2.onrender.com/api/auth/login",
         form
       );
       sessionStorage.setItem("authToken", res.data.token);

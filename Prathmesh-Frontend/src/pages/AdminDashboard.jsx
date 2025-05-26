@@ -15,7 +15,7 @@ const Dashboard = () => {
     const fetchStats = async () => {
       try {
         const res = await axios.get(
-          "https://prathmesh-1.onrender.com/api/dashboard/stats"
+          "https://prathmesh-2.onrender.com/api/dashboard/stats"
         );
         setStats(res.data);
       } catch (err) {

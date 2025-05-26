@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HiPencil, HiTrash, HiPlus } from "react-icons/hi";
 
-const API_BASE = "https://prathmesh-1.onrender.com/api/vans";
+const API_BASE = "https://prathmesh-2.onrender.com/api/vans";
 
 const Vans = () => {
   const [vanBookings, setVanBookings] = useState([]);

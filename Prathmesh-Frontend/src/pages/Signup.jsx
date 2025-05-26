@@ -22,7 +22,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       await axios.post(
-        "https://prathmesh-1.onrender.com/api/auth/signup",
+        "https://prathmesh-2.onrender.com/api/auth/signup",
         form
       );
       toast.success("Signup successful. Please login.");
