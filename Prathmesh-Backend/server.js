@@ -23,7 +23,7 @@ app.use(
 
 app.use(express.json());
 app.get("/", (req, res) => {
-  res.send("Welcome to the Van Rental API");
+  res.send({ activestaus: "active", message: "Welcome to the Van Rental API" });
 });
 // Your routes
 app.use("/api/owners", ownersRoutes);
