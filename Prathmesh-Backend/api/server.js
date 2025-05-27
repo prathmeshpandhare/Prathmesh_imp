@@ -19,7 +19,7 @@ const app = express();
 // CORS - Allow frontend origin
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://prathmesh-imp.vercel.app"],
+    origin: ["http://localhost:5173", "https://prathmesh-imp-6kkx.vercel.app"],
     credentials: true,
   })
 );
