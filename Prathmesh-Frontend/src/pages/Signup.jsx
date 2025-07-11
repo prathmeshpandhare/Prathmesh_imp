@@ -44,7 +44,10 @@ const Signup = () => {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/auth/signup", form);
+      await axios.post(
+        "https://prathmesh-imp.vercel.app/api/auth/signup",
+        form
+      );
       toast.success("Signup successful. Please login.");
       navigate("/login");
     } catch (err) {

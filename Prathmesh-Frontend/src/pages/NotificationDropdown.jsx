@@ -7,7 +7,7 @@ const NotificationDropdown = ({ userId }) => {
   const fetchNotifications = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/notifications/${userId}`
+        `https://prathmesh-imp.vercel.app/api/notifications/${userId}`
       );
       setNotifications(res.data.reverse()); // Latest on top
     } catch (err) {

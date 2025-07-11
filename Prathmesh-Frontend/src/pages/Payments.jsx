@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HiPlus, HiPencil, HiTrash } from "react-icons/hi";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = "https://prathmesh-imp.vercel.app/api";
 
 const Payments = () => {
   const [owners, setOwners] = useState([]);

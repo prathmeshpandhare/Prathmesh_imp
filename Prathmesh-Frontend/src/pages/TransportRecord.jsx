@@ -28,7 +28,7 @@ const TransportRecord = () => {
 
   const fetchRecords = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/transport/transport-records"
+      "https://prathmesh-imp.vercel.app/api/transport/transport-records"
     );
     setRecords(res.data);
   };
@@ -46,12 +46,12 @@ const TransportRecord = () => {
     try {
       if (editRecord) {
         await axios.put(
-          `http://localhost:5000/api/transport/transport-record/${editRecord._id}`,
+          `https://prathmesh-imp.vercel.app/api/transport/transport-record/${editRecord._id}`,
           formData
         );
       } else {
         await axios.post(
-          "http://localhost:5000/api/transport/transport-record",
+          "https://prathmesh-imp.vercel.app/api/transport/transport-record",
           formData
         );
       }
@@ -72,7 +72,7 @@ const TransportRecord = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this record?")) {
       await axios.delete(
-        `http://localhost:5000/api/transport/transport-record/${id}`
+        `https://prathmesh-imp.vercel.app/api/transport/transport-record/${id}`
       );
       fetchRecords();
     }

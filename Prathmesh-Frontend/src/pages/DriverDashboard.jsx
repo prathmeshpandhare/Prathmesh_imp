@@ -10,10 +10,13 @@ const DriverDashboard = ({ parcel }) => {
     ];
 
     for (let recipient of recipients) {
-      await axios.post("http://localhost:5000/api/notifications/create", {
-        ...recipient,
-        message: `Parcel delivered to ${parcel.location}`,
-      });
+      await axios.post(
+        "https://prathmesh-imp.vercel.app/api/notifications/create",
+        {
+          ...recipient,
+          message: `Parcel delivered to ${parcel.location}`,
+        }
+      );
     }
 
     alert("Notifications sent");

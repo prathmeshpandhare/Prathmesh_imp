@@ -6,7 +6,7 @@ const CompanyDashboard = ({ companyId }) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/parcels/company/${companyId}`)
+      .get(`https://prathmesh-imp.vercel.app/api/parcels/company/${companyId}`)
       .then((res) => setParcels(res.data))
       .catch((err) => console.error(err));
   }, [companyId]);

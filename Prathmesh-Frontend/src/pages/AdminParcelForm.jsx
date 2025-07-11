@@ -23,7 +23,10 @@ const AdminParcelForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/parcels/create", form);
+      await axios.post(
+        "https://prathmesh-imp.vercel.app/api/parcels/create",
+        form
+      );
       alert("Parcel created successfully.");
     } catch (err) {
       alert("Error creating parcel.");
