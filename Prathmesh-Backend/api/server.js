@@ -28,6 +28,7 @@ app.use(
       "http://localhost:5175",
       "http://localhost:5176",
       "https://prathmesh-imp-6kkx.vercel.app",
+      "https://prathmesh-imp-6kkx-git-main-prathmeshs-projects-2cc3da5e.vercel.app",
     ],
     credentials: true,
   })
