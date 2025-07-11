@@ -3,43 +3,53 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 
-// Import routes
+// Routes
 import ownersRoutes from "../routes/owners.js";
 import dealsRoutes from "../routes/deals.js";
 import paymentRoutes from "../routes/paymentRoutes.js";
 import vanRoutes from "../routes/vanRoutes.js";
 import authRoutes from "../routes/authRoutes.js";
 import dashboardroutes from "../routes/dashboardRoutes.js";
-
-// Configure dotenv
+import parcelRoutes from "../routes/parcelRoutes.js";
+import notificationRoutes from "../routes/notificationRoutes.js";
+import transportRoutes from "../routes/transportRoutes.js";
+import driverRoutes from "../routes/driverRoutes.js";
+import companyRoutes from "../routes/companyRoutes.js";
+// Config
 dotenv.config();
-
 const app = express();
 
-// CORS - Allow frontend origin
+// Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://prathmesh-imp-6kkx.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      "http://localhost:5176",
+      "https://prathmesh-imp-6kkx.vercel.app",
+    ],
     credentials: true,
   })
 );
-
 app.use(express.json());
 
-// Root test route
+// Routes
 app.get("/", (req, res) => {
-  res.send({ activestaus: "active", message: "Welcome to the Van Rental API" });
+  res.send({ status: "active", message: "Welcome to the Van Rental API" });
 });
-
-// Mount all API routes
 app.use("/api/owners", ownersRoutes);
 app.use("/api/deals", dealsRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/vans", vanRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardroutes);
-
-// Ensure Mongoose connection is established once per cold start
+app.use("/api/parcels", parcelRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/transport", transportRoutes);
+app.use("/api/drivers", driverRoutes);
+app.use("/api/companies", companyRoutes);
+// MongoDB connection
 let isConnected = false;
 async function connectDB() {
   if (!isConnected) {
@@ -49,8 +59,18 @@ async function connectDB() {
   }
 }
 
-// Export serverless handler
+// --- For Local Dev ---
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running locally at http://localhost:${PORT}`);
+    });
+  });
+}
+
+// --- For Serverless Deployment ---
 export default async function handler(req, res) {
   await connectDB();
-  return app(req, res);
+  return app(req, res); // Adapts Express app to serverless platforms
 }

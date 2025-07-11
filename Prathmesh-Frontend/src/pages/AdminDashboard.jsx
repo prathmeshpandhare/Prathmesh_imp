@@ -15,7 +15,7 @@ const Dashboard = () => {
     const fetchStats = async () => {
       try {
         const res = await axios.get(
-          "https://prathmesh-imp.vercel.app/api/dashboard/stats"
+          "http://localhost:5000/api/dashboard/stats"
         );
         setStats(res.data);
       } catch (err) {

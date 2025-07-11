@@ -2,7 +2,13 @@ import Payment from "../models/Payment.js";
 
 export const getPayments = async (req, res) => {
   try {
-    const payments = await Payment.find();
+    const { ownerId, companyId } = req.query;
+
+    const filter = {};
+    if (ownerId) filter.ownerId = ownerId;
+    if (companyId) filter.companyId = companyId;
+
+    const payments = await Payment.find(filter);
     res.json(payments);
   } catch (error) {
     res.status(500).json({ message: "Error fetching payments" });

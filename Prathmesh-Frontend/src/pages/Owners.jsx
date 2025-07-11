@@ -8,7 +8,7 @@ const Owners = () => {
   const [allVans, setAllVans] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
-  const API_BASE = "https://prathmesh-imp.vercel.app";
+  const API_BASE = "http://localhost:5000";
 
   const [form, setForm] = useState({
     name: "",

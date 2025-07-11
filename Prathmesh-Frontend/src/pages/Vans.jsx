@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { HiPencil, HiTrash, HiPlus } from "react-icons/hi";
 
-const API_BASE = "https://prathmesh-imp.vercel.app/api/vans";
+const API_BASE = "http://localhost:5000/api/vans";
 
 const Vans = () => {
   const [vanBookings, setVanBookings] = useState([]);
   const [newVan, setNewVan] = useState({
     vanNumber: "",
     bookedDays: "",
-    amount: "",
+    actualAmount: "",
+    totalAmount: "",
   });
+
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +38,12 @@ const Vans = () => {
   };
 
   const handleAdd = async () => {
-    if (!newVan.vanNumber || !newVan.bookedDays || !newVan.amount) {
+    if (
+      !newVan.vanNumber ||
+      !newVan.bookedDays ||
+      !newVan.actualAmount ||
+      !newVan.totalAmount
+    ) {
       alert("Please fill all fields.");
       return;
     }
@@ -48,12 +55,18 @@ const Vans = () => {
         body: JSON.stringify({
           ...newVan,
           bookedDays: Number(newVan.bookedDays),
-          amount: Number(newVan.amount),
+          actualAmount: Number(newVan.actualAmount) || undefined,
+          totalAmount: Number(newVan.totalAmount) || undefined,
         }),
       });
       if (!res.ok) throw new Error("Failed to add van");
       await fetchVans();
-      setNewVan({ vanNumber: "", bookedDays: "", amount: "" });
+      setNewVan({
+        vanNumber: "",
+        bookedDays: "",
+        actualAmount: "",
+        totalAmount: "",
+      });
     } catch (error) {
       console.error(error);
     }
@@ -65,13 +78,19 @@ const Vans = () => {
     setNewVan({
       vanNumber: van.vanNumber,
       bookedDays: van.bookedDays,
-      amount: van.amount,
+      actualAmount: van.actualAmount || "",
+      totalAmount: van.totalAmount || "",
     });
     setEditingId(id);
   };
 
   const handleSave = async () => {
-    if (!newVan.vanNumber || !newVan.bookedDays || !newVan.amount) {
+    if (
+      !newVan.vanNumber ||
+      !newVan.bookedDays ||
+      !newVan.actualAmount ||
+      !newVan.totalAmount
+    ) {
       alert("Please fill all fields.");
       return;
     }
@@ -83,12 +102,18 @@ const Vans = () => {
         body: JSON.stringify({
           ...newVan,
           bookedDays: Number(newVan.bookedDays),
-          amount: Number(newVan.amount),
+          actualAmount: Number(newVan.actualAmount),
+          totalAmount: Number(newVan.totalAmount),
         }),
       });
       if (!res.ok) throw new Error("Failed to update van");
       await fetchVans();
-      setNewVan({ vanNumber: "", bookedDays: "", amount: "" });
+      setNewVan({
+        vanNumber: "",
+        bookedDays: "",
+        actualAmount: "",
+        totalAmount: "",
+      });
       setEditingId(null);
     } catch (error) {
       console.error(error);
@@ -101,7 +126,12 @@ const Vans = () => {
       if (!res.ok) throw new Error("Failed to delete van");
       await fetchVans();
       if (editingId === id) {
-        setNewVan({ vanNumber: "", bookedDays: "", amount: "" });
+        setNewVan({
+          vanNumber: "",
+          bookedDays: "",
+          actualAmount: "",
+          totalAmount: "",
+        });
         setEditingId(null);
       }
     } catch (error) {
@@ -134,9 +164,17 @@ const Vans = () => {
           placeholder="Booked Days"
         />
         <input
-          name="amount"
+          name="actualAmount"
           type="number"
-          value={newVan.amount}
+          value={newVan.actualAmount}
+          onChange={handleChange}
+          className="border p-2 rounded"
+          placeholder="Actual Amount"
+        />
+        <input
+          name="totalAmount"
+          type="number"
+          value={newVan.totalAmount}
           onChange={handleChange}
           className="border p-2 rounded"
           placeholder="Total Amount"
@@ -179,12 +217,11 @@ const Vans = () => {
               )}
               {vanBookings.map((van, index) => (
                 <tr key={van._id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 border-b">{index + 1}</td>{" "}
-                  {/* Sr No */}
+                  <td className="px-4 py-2 border-b">{index + 1}</td>
                   <td className="px-4 py-2 border-b">{van.vanNumber}</td>
                   <td className="px-4 py-2 border-b">{van.bookedDays}</td>
                   <td className="px-4 py-2 border-b">
-                    ₹{van.amount.toLocaleString()}
+                    ₹{(van.totalAmount || 0).toLocaleString()}
                   </td>
                   <td className="px-4 py-2 border-b flex gap-2">
                     <button

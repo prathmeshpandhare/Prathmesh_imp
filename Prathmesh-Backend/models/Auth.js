@@ -4,7 +4,13 @@ const authSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ["admin", "owner"], required: true },
+
+  role: {
+    type: String,
+    enum: ["admin", "owner", "company", "driver"],
+    required: true,
+  },
+
   contact: { type: String, required: true },
 });
 

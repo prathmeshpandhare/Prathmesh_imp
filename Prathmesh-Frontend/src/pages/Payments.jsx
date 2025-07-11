@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HiPlus, HiPencil, HiTrash } from "react-icons/hi";
 import axios from "axios";
 
-const BASE_URL = "https://prathmesh-imp.vercel.app/api";
+const BASE_URL = "http://localhost:5000/api";
 
 const Payments = () => {
   const [owners, setOwners] = useState([]);
@@ -14,7 +14,8 @@ const Payments = () => {
     ownerId: "",
     ownerName: "",
     vanNumber: "",
-    amount: "",
+    actualAmount: "",
+    totalAmount: "",
     date: "",
     status: "Pending",
   });
@@ -22,7 +23,15 @@ const Payments = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
 
-  // Fetch owners and payments on load
+  // Role handling
+  const user = JSON.parse(localStorage.getItem("user"));
+  const role = user?.role;
+
+  if (role === "driver") return null;
+
+  const canAdd = role === "admin";
+  const canEdit = role === "admin";
+
   useEffect(() => {
     axios
       .get(`${BASE_URL}/owners/getall`)
@@ -47,21 +56,19 @@ const Payments = () => {
       vanNumber: "",
     }));
 
-    // Fetch vans for this owner from API
     if (ownerId) {
       axios
         .get(`${BASE_URL}/vans/by-owner/${ownerId}`)
         .then((res) => {
-          // res.data should be array of vans
           const vansList = res.data.map((van) => van.vanNumber);
           setVans(vansList);
         })
         .catch((err) => {
           console.error("Error fetching vans:", err);
-          setVans([]); // clear vans on error
+          setVans([]);
         });
     } else {
-      setVans([]); // clear vans if no owner selected
+      setVans([]);
     }
   };
 
@@ -74,16 +81,17 @@ const Payments = () => {
   };
 
   const handleAddOrUpdate = () => {
-    const { ownerName, vanNumber, amount, date } = formData;
+    const { ownerName, vanNumber, actualAmount, totalAmount, date } = formData;
 
-    if (!ownerName || !vanNumber || !amount || !date) {
+    if (!ownerName || !vanNumber || !actualAmount || !totalAmount || !date) {
       alert("Please fill in all fields.");
       return;
     }
 
     const payload = {
       ...formData,
-      amount: Number(amount),
+      actualAmount: Number(actualAmount),
+      totalAmount: Number(totalAmount),
     };
 
     if (isEditing) {
@@ -112,7 +120,8 @@ const Payments = () => {
       ownerId: "",
       ownerName: "",
       vanNumber: "",
-      amount: "",
+      actualAmount: "",
+      totalAmount: "",
       date: "",
       status: "Pending",
     });
@@ -126,7 +135,6 @@ const Payments = () => {
     setFormData(payment);
     setSelectedOwnerId(payment.ownerId);
 
-    // Fetch vans for this owner dynamically
     if (payment.ownerId) {
       axios
         .get(`${BASE_URL}/vans/by-owner/${payment.ownerId}`)
@@ -161,83 +169,91 @@ const Payments = () => {
       <h2 className="text-2xl font-bold mb-4">Payments</h2>
       <p className="mb-4 text-gray-600">Track payments given to van owners.</p>
 
-      {/* Form */}
-      <div className="grid md:grid-cols-6 gap-4 mb-6">
-        <select
-          className="border p-2 rounded col-span-2"
-          name="ownerId"
-          value={selectedOwnerId}
-          onChange={handleOwnerChange}
-        >
-          <option value="">Select Owner</option>
-          {owners.map((owner) => (
-            <option key={owner._id} value={owner._id}>
-              {owner.name}
-            </option>
-          ))}
-        </select>
+      {canAdd && (
+        <>
+          <div className="grid md:grid-cols-6 gap-4 mb-6">
+            <select
+              className="border p-2 rounded col-span-2"
+              name="ownerId"
+              value={selectedOwnerId}
+              onChange={handleOwnerChange}
+            >
+              <option value="">Select Owner</option>
+              {owners.map((owner) => (
+                <option key={owner._id} value={owner._id}>
+                  {owner.name}
+                </option>
+              ))}
+            </select>
 
-        <select
-          className="border p-2 rounded col-span-1"
-          name="vanNumber"
-          value={formData.vanNumber}
-          onChange={handleInputChange}
-        >
-          <option value="">Select Van</option>
-          {vans.map((van, index) => (
-            <option key={index} value={van}>
-              {van}
-            </option>
-          ))}
-        </select>
+            <select
+              className="border p-2 rounded col-span-1"
+              name="vanNumber"
+              value={formData.vanNumber}
+              onChange={handleInputChange}
+            >
+              <option value="">Select Van</option>
+              {vans.map((van, index) => (
+                <option key={index} value={van}>
+                  {van}
+                </option>
+              ))}
+            </select>
 
-        <input
-          className="border p-2 rounded col-span-1"
-          name="amount"
-          placeholder="Amount"
-          type="number"
-          value={formData.amount}
-          onChange={handleInputChange}
-        />
+            <input
+              className="border p-2 rounded col-span-1"
+              name="actualAmount"
+              placeholder="Actual Amount"
+              type="number"
+              value={formData.actualAmount}
+              onChange={handleInputChange}
+            />
 
-        <input
-          className="border p-2 rounded col-span-1"
-          name="date"
-          type="date"
-          value={formData.date}
-          onChange={handleInputChange}
-        />
+            <input
+              className="border p-2 rounded col-span-1"
+              name="totalAmount"
+              placeholder="Total Amount"
+              type="number"
+              value={formData.totalAmount}
+              onChange={handleInputChange}
+            />
 
-        <select
-          className="border p-2 rounded col-span-1"
-          name="status"
-          value={formData.status}
-          onChange={handleInputChange}
-        >
-          <option value="Pending">Pending</option>
-          <option value="Paid">Paid</option>
-        </select>
-      </div>
+            <input
+              className="border p-2 rounded col-span-1"
+              name="date"
+              type="date"
+              value={formData.date}
+              onChange={handleInputChange}
+            />
+          </div>
 
-      <button
-        className="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2"
-        onClick={handleAddOrUpdate}
-      >
-        <HiPlus className="text-xl" />
-        {isEditing ? "Update Payment" : "Add Payment"}
-      </button>
+          <button
+            className="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2"
+            onClick={handleAddOrUpdate}
+          >
+            <HiPlus className="text-xl" />
+            {isEditing ? "Update Payment" : "Add Payment"}
+          </button>
+        </>
+      )}
 
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto border border-gray-200">
           <thead className="bg-gray-100">
             <tr>
               <th className="text-left px-4 py-2 border-b">Owner Name</th>
               <th className="text-left px-4 py-2 border-b">Van Number</th>
-              <th className="text-left px-4 py-2 border-b">Amount (₹)</th>
+              {role === "admin" && (
+                <th className="text-left px-4 py-2 border-b">
+                  Actual Amount (₹)
+                </th>
+              )}
+              <th className="text-left px-4 py-2 border-b">Total Amount (₹)</th>
               <th className="text-left px-4 py-2 border-b">Date</th>
               <th className="text-left px-4 py-2 border-b">Status</th>
-              <th className="text-left px-4 py-2 border-b">Actions</th>
+              {canEdit && (
+                <th className="text-left px-4 py-2 border-b">Actions</th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -245,8 +261,13 @@ const Payments = () => {
               <tr key={payment._id || index} className="hover:bg-gray-50">
                 <td className="px-4 py-2 border-b">{payment.ownerName}</td>
                 <td className="px-4 py-2 border-b">{payment.vanNumber}</td>
+                {role === "admin" && (
+                  <td className="px-4 py-2 border-b">
+                    ₹{payment.actualAmount?.toLocaleString()}
+                  </td>
+                )}
                 <td className="px-4 py-2 border-b">
-                  ₹{payment.amount.toLocaleString()}
+                  ₹{payment.totalAmount?.toLocaleString()}
                 </td>
                 <td className="px-4 py-2 border-b">{payment.date}</td>
                 <td
@@ -258,22 +279,24 @@ const Payments = () => {
                 >
                   {payment.status}
                 </td>
-                <td className="px-4 py-2 border-b space-x-2">
-                  <button
-                    onClick={() => handleEdit(payment, index)}
-                    className="text-blue-600 hover:text-blue-800"
-                    title="Edit"
-                  >
-                    <HiPencil className="inline-block text-xl" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(index)}
-                    className="text-red-600 hover:text-red-800"
-                    title="Delete"
-                  >
-                    <HiTrash className="inline-block text-xl" />
-                  </button>
-                </td>
+                {canEdit && (
+                  <td className="px-4 py-2 border-b space-x-2">
+                    <button
+                      onClick={() => handleEdit(payment, index)}
+                      className="text-blue-600 hover:text-blue-800"
+                      title="Edit"
+                    >
+                      <HiPencil className="inline-block text-xl" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(index)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Delete"
+                    >
+                      <HiTrash className="inline-block text-xl" />
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

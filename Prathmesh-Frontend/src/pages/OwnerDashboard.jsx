@@ -27,7 +27,7 @@ const OwnerDashboard = () => {
     const fetchCounts = async () => {
       try {
         const res = await axios.get(
-          `https://prathmesh-imp.vercel.app/api/owners/stats/${ownerId}`
+          `http://localhost:5000/api/owners/stats/${ownerId}`
         );
         setCounts(res.data);
       } catch (err) {

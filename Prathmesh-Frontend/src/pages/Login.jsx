@@ -16,7 +16,7 @@ const Login = ({ setIsAuthenticated }) => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://prathmesh-imp.vercel.app/api/auth/login",
+        "http://localhost:5000/api/auth/login",
         form
       );
       sessionStorage.setItem("authToken", res.data.token);
@@ -25,7 +25,14 @@ const Login = ({ setIsAuthenticated }) => {
       sessionStorage.setItem("id", res.data.id);
       setIsAuthenticated(true);
       toast.success("Login successful!");
-      navigate(res.data.role === "admin" ? "/" : "/owner-dashboard");
+
+      const userRole = res.data.role;
+      if (userRole === "admin") navigate("/admin-dashboard");
+      else if (userRole === "owner") navigate("/owner-dashboard");
+      else if (userRole === "driver") navigate("/driver-dashboard");
+      else if (userRole === "company") navigate("/company-dashboard");
+
+      // navigate(res.data.role === "admin" ? "/" : "/owner-dashboard");
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
     }

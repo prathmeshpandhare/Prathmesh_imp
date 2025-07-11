@@ -9,7 +9,17 @@ const dealSchema = new mongoose.Schema(
     vanId: { type: String, required: true },
     ownerId: { type: String, required: true },
     amount: { type: Number, required: true },
-    status: { type: String, default: "pending" },
+
+    companyId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    vanRequired: Boolean,
+    deliveryDays: Number,
+    extendedDays: Number,
+    chargesForExtension: Number,
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected", "completed"],
+    },
+    assignedVanId: { type: mongoose.Schema.Types.ObjectId, ref: "Van" },
   },
   { timestamps: true }
 );

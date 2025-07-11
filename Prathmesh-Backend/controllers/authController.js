@@ -2,9 +2,39 @@ import Auth from "../models/Auth.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+// Allowed roles
+const validRoles = ["admin", "owner", "driver", "company"];
+
+// Emails allowed to sign up as admin
+const allowedAdminEmails = [
+  "admin1@example.com",
+  "admin2@example.com",
+  "superadmin@example.com",
+];
+
 export const signup = async (req, res) => {
   try {
     const { name, email, password, contact, role } = req.body;
+
+    // Role validation
+    if (!validRoles.includes(role)) {
+      return res.status(400).json({ message: "Invalid role provided" });
+    }
+
+    // Admin email restriction
+    if (role === "admin" && !allowedAdminEmails.includes(email)) {
+      return res.status(403).json({
+        message: "You are not authorized to sign up as admin",
+      });
+    }
+
+    // Check if email is already registered
+    const existingUser = await Auth.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: "Email already registered" });
+    }
+
+    // Password hashing
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new Auth({
@@ -14,6 +44,7 @@ export const signup = async (req, res) => {
       contact,
       role,
     });
+
     await user.save();
 
     res.status(201).json({ message: "Signup successful" });
@@ -35,9 +66,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      {
-        expiresIn: "1d",
-      }
+      { expiresIn: "1d" }
     );
 
     res.json({ token, role: user.role, name: user.name, id: user._id });

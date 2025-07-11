@@ -8,16 +8,17 @@ export const getAllVans = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 export const addVan = async (req, res) => {
   try {
-    const { vanNumber, bookedDays, amount } = req.body;
+    const { vanNumber, bookedDays, amount, actualAmount, totalAmount } =
+      req.body;
 
-    // Force vanNumber to string to avoid Number/String mismatch
     const newVan = new Van({
       vanNumber: String(vanNumber),
       bookedDays,
       amount,
+      actualAmount,
+      totalAmount,
     });
 
     await newVan.save();
