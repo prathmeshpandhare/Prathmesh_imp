@@ -9,13 +9,15 @@ const OwnerDashboard = () => {
     booked: 0,
   });
 
-  const ownerId = localStorage.getItem("id");
-  const ownerName = localStorage.getItem("name");
+  const ownerId = sessionStorage.getItem("id");
+  const ownerName = sessionStorage.getItem("name");
 
   useEffect(() => {
     const fetchVans = async () => {
       try {
-        const res = await axios.get(`/api/vans/owner/${ownerId}`);
+        const res = await axios.get(
+          `https://prathmesh-imp.vercel.app/api/vans/owner/${ownerId}`
+        );
         const data = Array.isArray(res.data) ? res.data : [];
         setVans(data);
       } catch (err) {

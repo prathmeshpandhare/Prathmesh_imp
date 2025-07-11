@@ -24,7 +24,7 @@ const Payments = () => {
   const [editIndex, setEditIndex] = useState(null);
 
   // Role handling
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const role = user?.role;
 
   if (role === "driver") return null;
